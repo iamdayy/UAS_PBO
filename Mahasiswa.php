@@ -4,7 +4,9 @@ class Mahasiswa extends Model
 {
     // Nama field di $_SESSION yang akan digunakan sebagai "tabel" untuk model ini.
     protected static string $table = 'mahasiswa';
-    public $id; // Unique identifier for each Mahasiswa
+
+    public $id; // ID mahasiswa
+    // Properti untuk menyimpan data mahasiswa
     public $nama;
     public $nim;
     public $kelas;

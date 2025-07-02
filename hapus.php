@@ -8,6 +8,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($id === null) {
         die('ID mahasiswa tidak ditemukan!');
     }
+    // Cek apakah mahasiswa dengan ID tersebut ada
+    $existingMahasiswa = Mahasiswa::findById($id);
+    if (!$existingMahasiswa) {
+        die('Mahasiswa dengan ID tersebut tidak ditemukan!');
+    }
 
     // Hapus data mahasiswa berdasarkan ID
     $deleted = Mahasiswa::delete($id);

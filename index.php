@@ -1,9 +1,12 @@
 <?php
 include_once 'Mahasiswa.php';
-
+// cek apakah ada query string 'search' di URL
 if (isset($_GET['search'])) {
+    // jika ada, ambil nilainya
+    // dan simpan dalam variabel $search
     $search = $_GET['search'];
-    // Filter data berdasarkan nama atau NIM atau kelas atau semester
+    // ambil data mahasiswa berdasarkan pencarian
+    // dengan mencari di beberapa field
     $data = Mahasiswa::find('nama', $search);
     if (empty($data)) {
         $data = Mahasiswa::find('nim', $search);
@@ -18,6 +21,7 @@ if (isset($_GET['search'])) {
         $data = []; // Jika tidak ada data yang ditemukan, set data ke array kosong
     }
 } else {
+    // jika tidak ada, ambil semua data mahasiswa
     $data = Mahasiswa::all(); // Mengambil semua data mahasiswa dari session
 }
 ?>
@@ -33,7 +37,14 @@ if (isset($_GET['search'])) {
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-    <title>Hello, world!</title>
+    <title>
+        Daftar Mahasiswa
+        <?php
+        if (isset($_GET['search'])) {
+            echo ' - Hasil Pencarian: ' . htmlspecialchars($_GET['search']);
+        }
+        ?>
+    </title>
 </head>
 
 <body>
@@ -96,6 +107,14 @@ if (isset($_GET['search'])) {
                             </button>
 
                             <!-- Delete Button -->
+                            /**
+                            * Formulir untuk menghapus data mahasiswa.
+                            *
+                            * - Mengirim permintaan POST ke 'hapus.php' dengan ID mahasiswa yang akan dihapus.
+                            * - Menggunakan input tersembunyi untuk menyimpan ID mahasiswa.
+                            * - Tombol submit memiliki konfirmasi sebelum menghapus data.
+                            * - Menggunakan kelas Bootstrap untuk tampilan tombol.
+                            */
                             <form action="./hapus.php" method="POST" style="display:inline;">
                                 <input type="hidden" name="id" value="<?php echo $mahasiswa['id']; ?>">
                                 <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus data ini?');">
@@ -104,6 +123,30 @@ if (isset($_GET['search'])) {
                             </form>
 
                             <!-- Update Modal -->
+                            /**
+                            * Modal Form untuk Update Data Mahasiswa
+                            *
+                            * Modal ini dibuat secara dinamis untuk setiap mahasiswa berdasarkan NIM.
+                            *
+                            * Fitur:
+                            * - Menampilkan modal Bootstrap untuk mengubah data mahasiswa.
+                            * - Field form: Nama, Kelas, Semester, Durasi Mengerjakan, dan Waktu Mengerjakan.
+                            * - Menggunakan metode POST ke 'update.php'.
+                            * - Field tersembunyi untuk 'id' dan 'nim' agar data yang diubah tepat.
+                            * - Setiap input sudah terisi data mahasiswa saat ini.
+                            * - ID modal dan elemen form unik berdasarkan NIM mahasiswa.
+                            * - Terdapat tombol batal (tutup modal) dan simpan (submit perubahan).
+                            *
+                            * Variabel:
+                            * @var object|array $mahasiswa Data mahasiswa (object/array) berisi:
+                            * - id (int|string): ID unik mahasiswa
+                            * - nim (string): Nomor Induk Mahasiswa
+                            * - nama (string): Nama mahasiswa
+                            * - kelas (string): Kelas
+                            * - semester (int): Semester
+                            * - durasiMengerjakan (int): Durasi mengerjakan (menit)
+                            * - waktuMengerjakan (string): Waktu mengerjakan
+                            */
                             <div class="modal fade" id="updateModal-<?php echo $mahasiswa->nim; ?>" tabindex="-1" aria-labelledby="updateModalLabel-<?php echo $mahasiswa->nim; ?>" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <form action="./update.php" method="POST" class="modal-content">
@@ -151,7 +194,7 @@ if (isset($_GET['search'])) {
             ?>
         </div>
     </div>
-
+    <!-- Footer untuk mereset sesi -->
     <footer class="text-center mt-5">
         <form action="" method="post" style="display:inline;">
             <button type="submit" name="clear_session" class="btn btn-warning btn-sm">Clear Session</button>

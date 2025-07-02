@@ -18,7 +18,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($nama) || empty($nim) || empty($kelas) || empty($semester) || empty($durasiMengerjakan) || empty($waktuMengerjakan)) {
         die('Semua field harus diisi!');
     }
-    // Buat instance Mahasiswa
+    // Cek apakah mahasiswa dengan ID tersebut ada
+    $existingMahasiswa = Mahasiswa::findById($id);
+    if (!$existingMahasiswa) {
+        die('Mahasiswa dengan ID tersebut tidak ditemukan!');
+    }
+    // Update data mahasiswa berdasarkan ID
     $updatedMahasiswa = Mahasiswa::update($id, [
         'nama' => $nama,
         'nim' => $nim,
