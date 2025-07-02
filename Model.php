@@ -110,6 +110,8 @@ class Model
         $instance = new static();
 
         if (!isset($data[static::$primaryKey])) {
+            // Jika primary key belum ada, buat yang baru
+            // Gunakan uniqid untuk membuat primary key unik
             $data[static::$primaryKey] = uniqid(static::$table . '_');
         } else {
             // Jika primary key sudah ada, cek duplikasi
